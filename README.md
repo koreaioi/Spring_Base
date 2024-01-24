@@ -53,5 +53,25 @@ Model이 데이터를 어떻게 처리할 지 알려주는 역할, 처리 결과
     * Http의 Body태그에 객체를 JSON 방식으로 변환해 직접 반환
     * 위 역할을 HttpMessageConverter에서 JsonConverter가 수행
 
+</details>
+
+
+<details>
+<summary>비지니스 요구사항 정리</summary>
+
+## 일반적인 웹 어플리케이션 구조
+![img_1.png](img_1.png)
+컨트롤러: 웹 MVC의 컨트롤러 역할
+
+서비스: 핵심 비지니스 로직 구현
+
+리포지토리: 데이터베이스에 접근, 도메인 객체를 DB에 저장하고 관리
+
+도메인: 비지니스 도메인 객체, ex)회원, 주문, 쿠폰
+
+
+##클래스 의존관계
+![img_2.png](img_2.png)
+
 
 </details>
