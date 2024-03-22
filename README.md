@@ -56,6 +56,7 @@ Model이 데이터를 어떻게 처리할 지 알려주는 역할, 처리 결과
 </details>
 
 
+<!--비지니스 요구사항 정리-->
 <details>
 <summary>비지니스 요구사항 정리</summary>
 
@@ -72,6 +73,115 @@ Model이 데이터를 어떻게 처리할 지 알려주는 역할, 처리 결과
 
 ##클래스 의존관계
 ![img_2.png](img_2.png)
+
+
+</details>
+
+<details>
+<summary>회원 도메인과 리포지토리 만들기</summary>
+public class Member {
+
+```java
+//Member Domain 만들기
+package hello.hellospring.domain;
+public class Member {
+
+    private Long id;
+    private String name;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+}
+```
+
+* MemberRepository Interface만들기
+* 일단 Map에 멤버를 저장한다.
+* 하지만 추후 인메모리 DB (H2) 또는 MySQL을 사용 할 수 있기 때문에 인터페이스를 만들고 바꿔끼우기(코드수정) 쉽게 인터페이스를 만들고 실제 사용하는 Repostiroy가 이를 구현하도록한다.
+
+- MemberRepository는 저장, 조회(id, name, all) 기능을 가지고 있다.
+```java
+//MemberRepository 
+package hello.hellospring.repository;
+import hello.hellospring.domain.Member;
+import java.util.*;
+
+public interface MemberRepository {
+    //리포지토리의 4가지 기능 만들기
+    Member save(Member member);
+
+    Optional<Member> findById(Long id);
+
+    Optional<Member> findByName(String name);
+
+    List<Member> findAll();
+}
+
+```
+
+
+Map을 사용하는 MemoryMemberRepository -> MemberRepository의 기능을 구현한다.
+```java
+package hello.hellospring.repository;
+import hello.hellospring.domain.Member;
+import java.util.*;
+
+public class MemoryMemberRepository implements MemberRepository{
+
+    private static Map<Long, Member> store = new HashMap<>();
+    private static long sequence = 0L; //id 설정
+
+    @Override
+    public Member save(Member member) {
+        member.setId(++sequence);
+        store.put(member.getId(), member);
+
+        return member;
+    }
+
+    @Override
+    public Optional<Member> findById(Long id) {
+
+        // Null이 있으면 Optional로 감싸서 반환
+        return Optional.ofNullable(store.get(id)); 
+    }
+
+    @Override
+    public Optional<Member> findByName(String name) {
+        //람다식 사용으로 반환
+        return store.values().stream() 
+                .filter(member -> member.getName().equals(name))
+                .findAny();
+    }
+
+    @Override
+    public List<Member> findAll() {
+
+        return new ArrayList<>(store.values());
+    }
+}
+
+
+```
+</details>
+
+<details>
+<summary>회원 리포지토리 테스트 케이스 작성</summary>
+전에 작성한 MemoryMemberRepository 메서드가 제대로 작동하는 지를 테스트 케이스를 통해 확인한다.
+
+
 
 
 </details>
