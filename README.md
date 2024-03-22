@@ -181,7 +181,148 @@ public class MemoryMemberRepository implements MemberRepository{
 <summary>회원 리포지토리 테스트 케이스 작성</summary>
 전에 작성한 MemoryMemberRepository 메서드가 제대로 작동하는 지를 테스트 케이스를 통해 확인한다.
 
+/test/java/hello/hellospring/repository/MemoryMemberRepositoryTest.java 만들기
+
+```java
+package hello.hellospring.repository;
+
+import hello.hellospring.domain.Member;
+import org.assertj.core.api.Assertions;
+
+//import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+
+import java.util.List;
+import java.util.Optional;
+
+class MemoryMemberRepositoryTest {
+
+    MemoryMemberRepository repository = new MemoryMemberRepository();
+
+    @AfterEach
+    public void afterEach() {
+        //각 테스트가 끝날 때 마다 repository를 비워준다.
+        //아래의 메서드를 MemoryMemberRepostiroy에서 만들어줘야한다.
+        repository.clearStore();
+    }
+
+    @Test
+    public void save(){
+        Member member = new Member();
+        member.setName("spring");
+
+        repository.save(member);
+
+        Member result = repository.findById(member.getId()).get();
+        //Assertions.assertEquals(result, member); //jupiter
+        Assertions.assertThat(member).isEqualTo(result); //core
+    }
+
+    @Test
+    public void findByName(){
+        Member member1 = new Member();
+        member1.setName("spring1");
+        repository.save(member1);
+
+        Member member2 = new Member();
+        member2.setName("spring2");
+        repository.save(member2);
+
+        Member result = repository.findByName("spring1").get();
+        Assertions.assertThat(result).isEqualTo(member1);
+        //Assertions.assertThat(result).isEqualTo(member2); //실행시 테스트 오류
+    }
+
+    @Test //Test case를 각각 독립적으로 실행해야한다.-> @AfterEach 사용
+    public  void findAll() {
+        Member member1 = new Member();
+        member1.setName("spring1");
+        repository.save(member1);
+
+        Member member2 = new Member();
+        member2.setName("spring2");
+        repository.save(member2);
+
+        List<Member> result = repository.findAll();
+        Assertions.assertThat(result.size()).isEqualTo(2);
+    }
+}
+```
+
+```java
+public class MemoryMemberRepository implements MemberRepository{
+    //... 기존 과 같음 아래 메서드 추가 (TestCase After Map clear)
+    public void clearStore(){
+        store.clear();
+    }
+}
+```
+</details>
+
+<details>
+<summary>회원 서비스 개발</summary>
+회원 서비스 개발 코드
+
+```java
+package hello.hellospring.Service;
+
+import hello.hellospring.domain.Member;
+import hello.hellospring.repository.MemberRepository;
+import hello.hellospring.repository.MemoryMemberRepository;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+
+@Service
+public class MemberService {
+
+    //DI 사용 X
+    private final MemberRepository memberRepository = new MemoryMemberRepository();
 
 
+    /*
+    * 회원 가입
+    * 같은 이름이 있으면 저장하지 않는 유효성 검사를 한다.
+    * */
+    public Long join(Member member){ //join - 비지니스 용어
+        //유효성 검사
+/*      Optional로 따로 저장하는게 좋지는 않으니 메서드 코드 처럼 반환값에 바로 . (dot)을 사용해 유효성 검증
+        Optional<Member> result = memberRepository.findByName(member.getName());
+        result.ifPresent(m -> {
+            throw new IllegalStateException("이미 존재하는 회원입니다.");
+        });
+*/
+        validateDuplicate(member); //중복 회원 검증
+        memberRepository.save(member);
+        return member.getId();
+    }
+
+
+    private void validateDuplicate(Member member) {
+        memberRepository.findByName(member.getName()).ifPresent(m -> {
+            throw new IllegalStateException("이미 존재하는 회원입니다.")
+        });
+    }
+
+    /*
+    * 전체 회원 조회
+    * */
+    public List<Member> findMembers(){
+        return memberRepository.findAll();
+    }
+
+    /*
+    * Id로 멤버 조회
+    * */
+    public Optional<Member> findOne(Long memberId) {
+        return memberRepository.findById(memberId);
+    }
+
+}
+
+```
+다음 시간은 위 처럼 만든 MemberService가 제대로 동작하는 지 Test case를 작성한다.
 
 </details>
