@@ -58,7 +58,9 @@ jobs:
 
       #$PROJECT_NAME을 S3 버킷 이름으로 바꾼다.
     - name: Code Deploy
-      run: aws deploy create-deployment --application-name testapp --deployment-config-name CodeDeployDefault.OneAtATime --deployment-group-name dev --s3-location bucket=isntyet-deploy,bundleType=zip,key=wooseok-server-test1-bucket/$GITHUB_SHA.zip
+      run: aws deploy create-deployment --application-name testapp --deployment-config-name CodeDeployDefault.OneAtATime --deployment-group-name dev --s3-location bucket=wooseok-server-test1-bucket,bundleType=zip,key=$GITHUB_SHA.zip
+      #run: aws deploy create-deployment --application-name testapp --deployment-config-name CodeDeployDefault.OneAtATime --deployment-group-name dev --s3-location bucket=isntyet-deploy,bundleType=zip,key=wooseok-server-test1-bucket/$GITHUB_SHA.zip
+
 
     # NOTE: The Gradle Wrapper is the default and recommended way to run Gradle (https://docs.gradle.org/current/userguide/gradle_wrapper.html).
     # If your project does not have the Gradle Wrapper configured, you can use the following configuration to run Gradle with a specified version.
