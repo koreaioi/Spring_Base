@@ -11,7 +11,7 @@ public class HelloController {
     @GetMapping("/hello")
     public String hello() {
 
-        return "배포 성공!";
+        return "배포 제발... 성공!";
     }
 
 }
