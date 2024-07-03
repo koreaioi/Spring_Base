@@ -52,7 +52,7 @@ jobs:
         aws-region: ${{ secrets.AWS_REGION }} 
 
     - name: Upload to S3 
-      run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.zip s3://wooseok-server-test1-bucket/$GITHUB_SHA.zip
+      run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.zip s3://isntyet-deploy/wooseok-server-test1-bucket/$GITHUB_SHA.zip
       #$PROJECT_NAME을 S3 버킷 이름으로 바꾼다.
       #run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.zip s3://isntyet-deploy/$PROJECT_NAME/$GITHUB_SHA.zip
 
