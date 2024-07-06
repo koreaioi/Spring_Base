@@ -1,8 +1,8 @@
 package hello.hellospring.entity;
 
-import lombok.Getter;
+import lombok.Data;
 
-@Getter
+@Data
 public class MemberDto {
     private String text;
 }
