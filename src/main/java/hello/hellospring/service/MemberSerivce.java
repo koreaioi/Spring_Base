@@ -3,7 +3,6 @@ package hello.hellospring.service;
 import hello.hellospring.entity.Member;
 import hello.hellospring.entity.MemberDto;
 import hello.hellospring.repository.MemberRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
